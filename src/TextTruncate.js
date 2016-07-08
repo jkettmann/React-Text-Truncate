@@ -5,19 +5,31 @@ export default class TextTruncate extends Component {
         text: React.PropTypes.string,
         truncateText: React.PropTypes.string,
         line: React.PropTypes.number,
-        showTitle: React.PropTypes.bool,
-        textTruncateChild: React.PropTypes.node,
-        containerClassName: React.PropTypes.string
+        containerClassName: React.PropTypes.string,
+        showMoreText: React.PropTypes.string,
+        showLessText: React.PropTypes.string,
+        showMoreLessClassName: React.PropTypes.string,
+        showAllText: React.PropTypes.bool,
+        onActualHeight: React.PropTypes.func,
+        onShowMoreClick: React.PropTypes.func,
+        onShowLessClick: React.PropTypes.func
     };
 
     static defaultProps = {
         text: '',
         truncateText: '…',
         line: 1,
-        showTitle: true
+        showTitle: true,
+        showAllText: false
     };
 
     componentDidMount() {
+        if (this.props.onActualHeight) {
+            const rect = this.refs.content.getBoundingClientRect();
+            const actualHeight = rect.bottom - rect.top;
+            this.props.onActualHeight(actualHeight);
+        }
+
         const canvas = document.createElement('canvas');
         const docFragment = document.createDocumentFragment();
         const style = window.getComputedStyle(this.refs.scope);
@@ -68,7 +80,7 @@ export default class TextTruncate extends Component {
             let width = 0;
             let lastIsEng = false;
             while(line--) {
-                let ext = line ? '' : this.props.truncateText;
+                let ext = line ? '' : this.props.truncateText + '   ' + this.props.showLessText;
                 while (currentPos <= maxTextLength) {
                     text = this.props.text.substr(startPos, currentPos);
                     width = this.measureWidth(text + ext);
@@ -116,25 +128,38 @@ export default class TextTruncate extends Component {
             text,
             truncateText,
             line,
-            showTitle,
-            textTruncateChild,
             containerClassName,
+            showMoreText,
+            showLessText,
+            showMoreLessClassName,
+            showAllText,
+            onActualHeight,
+            onShowMoreClick,
+            onShowLessClick,
             ...props
         } = this.props;
 
         let renderText = text;
-        if (this.refs.scope) {
+        if (!showAllText && this.refs.scope) {
             renderText = this.getRenderText();
         }
 
-        if (showTitle && !props.title) {
-            props.title = text;
-        }
+        const showMoreLess = (text === renderText && !showAllText) ? null : (
+          <span
+            className={showMoreLessClassName}
+            onClick={showAllText ? onShowLessClick : onShowMoreClick}
+            style={{textDecoration: 'underline', cursor: 'pointer'}}
+          >
+              {showAllText ? showLessText : showMoreText}
+          </span>
+        );
+
 
         return (
             <div ref='scope' className={containerClassName} style={{overflow: 'hidden'}}>
-                <div {...props}>{renderText}</div>
-                {text === renderText ? null : textTruncateChild}
+                <div ref='content' {...props}>
+                    {renderText}&nbsp;&nbsp;&nbsp;{showMoreLess}
+                </div>
             </div>
         );
     }

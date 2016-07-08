@@ -5,7 +5,7 @@ export class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
+            text: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. ',
             line: 2,
             truncateText: '…',
             showTitle: true,
@@ -36,10 +36,14 @@ export class App extends Component {
         } = this.state;
 
         if (appendTextTruncateChild) {
-            props.textTruncateChild = (
-                <a href='#'>Read On</a>
-            );
+            props.showMoreText = "Read On";
         }
+
+        props.showAllText = false;
+        props.showLessText = "Show less";
+        props.onShowMoreClick = () => console.log('click');
+        props.onShowLessClick = () => console.log('click');
+        props.onActualHeight = (height) => console.log(height);
 
         return (
             <div className='row'>
