@@ -144,13 +144,13 @@ export default class TextTruncate extends Component {
             renderText = this.getRenderText();
         }
 
-        const showMoreLess = (text === renderText && !showAllText) ? null : (
+        const showMoreLess = (text === renderText && !showAllText && this.refs.scope) ? null : (
           <span
             className={showMoreLessClassName}
-            onClick={showAllText ? onShowLessClick : onShowMoreClick}
+            onClick={showAllText && this.refs.scope ? onShowLessClick : onShowMoreClick}
             style={{textDecoration: 'underline', cursor: 'pointer'}}
           >
-              {showAllText ? showLessText : showMoreText}
+              {showAllText && this.refs.scope ? showLessText : showMoreText}
           </span>
         );
 
